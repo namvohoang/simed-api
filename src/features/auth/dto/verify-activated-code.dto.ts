@@ -5,7 +5,7 @@ export class VerifyActivatedCodeDto {
 	@ApiProperty()
 	readonly activatedCode: number;
 
-	//@ApiProperty()
+	@ApiProperty()
 	@IsEmail(
 		{},
 		{

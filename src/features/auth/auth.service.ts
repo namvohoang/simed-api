@@ -226,7 +226,7 @@ export class AuthService {
 		const html = `<p>${user.resetPasswordToken}</p>`;
 		const { subject, text, content } = {
 			subject: 'Password Reset',
-			text: 'Kaimono',
+			text: 'Simed',
 			content: html,
 		};
 		await this.mailerService.sendMail(
@@ -242,7 +242,7 @@ export class AuthService {
 		const html = `<p>${activatedCode}</p>`;
 		const { subject, text, content } = {
 			subject: 'Activated Code',
-			text: 'Kaimono',
+			text: 'Simed',
 			content: html,
 		};
 		await this.mailerService.sendMail(
