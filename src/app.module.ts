@@ -38,10 +38,7 @@ import { EventsModule } from './features/events/events.module';
 					migrationsDir: 'src/migration',
 				},
 				synchronize: true,
-				ssl:
-					configService.get('NODE_ENV') === 'production'
-						? { rejectUnauthorized: false }
-						: false,
+				ssl: configService.get('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,
 			}),
 		}),
 		AuthModule,

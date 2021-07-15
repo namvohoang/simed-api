@@ -6,6 +6,5 @@ export const apiVersion = process.env.API_VERSION || 'v1';
 
 // Third party configurations
 export const sendGridApiKey = process.env.SENDGRID_API_KEY;
-export const sendGridSender =
-	process.env.SENDGRID_SENDER || 'hoangnam.hcmut@gmail.com';
+export const sendGridSender = process.env.SENDGRID_SENDER || 'hoangnam.hcmut@gmail.com';
 export const sendGridSenderName = process.env.SENDGRID_SENDER_NAME || 'Simed';

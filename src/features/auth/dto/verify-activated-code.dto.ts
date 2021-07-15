@@ -9,8 +9,7 @@ export class VerifyActivatedCodeDto {
 	@IsEmail(
 		{},
 		{
-			message:
-				'Please enter a valid email address, for example joebriggs@mail.com',
+			message: 'Please enter a valid email address, for example joebriggs@mail.com',
 		},
 	)
 	readonly email: string;

@@ -44,35 +44,25 @@ export class AuthController {
 
 	@ApiOperation({ summary: ' Request reset password token ' })
 	@Post('request-reset-password-token')
-	async requestResetPasswordToken(
-		@Body() requestResetPasswordToken: RequestResetPasswordTokenDto,
-	): Promise<any> {
-		return await this.authService.requestResetPasswordToken(
-			requestResetPasswordToken,
-		);
+	async requestResetPasswordToken(@Body() requestResetPasswordToken: RequestResetPasswordTokenDto): Promise<any> {
+		return await this.authService.requestResetPasswordToken(requestResetPasswordToken);
 	}
 
 	@ApiOperation({ summary: ' Reset password ' })
 	@Post('reset-password')
-	async resetPassword(
-		@Body() resetPasswordDto: ResetPasswordDto,
-	): Promise<any> {
+	async resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<any> {
 		return await this.authService.resetPassword(resetPasswordDto);
 	}
 
 	@ApiOperation({ summary: ' Request activated code ' })
 	@Post('request-activated-code')
-	async requestActivatedCode(
-		@Body() requestActivatedCode: RequestActivatedCodeDto,
-	): Promise<any> {
+	async requestActivatedCode(@Body() requestActivatedCode: RequestActivatedCodeDto): Promise<any> {
 		return await this.authService.requestActivatedCode(requestActivatedCode);
 	}
 
 	@ApiOperation({ summary: ' Verify activated code ' })
 	@Post('verify-activated-code')
-	async verifyActivatedCode(
-		@Body() verifyActivatedCode: VerifyActivatedCodeDto,
-	): Promise<any> {
+	async verifyActivatedCode(@Body() verifyActivatedCode: VerifyActivatedCodeDto): Promise<any> {
 		return await this.authService.verifyActivatedCode(verifyActivatedCode);
 	}
 }

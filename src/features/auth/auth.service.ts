@@ -1,19 +1,10 @@
-import {
-	HttpException,
-	HttpStatus,
-	Injectable,
-	BadRequestException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, BadRequestException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/database/entity/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import {
-	tokenExpired,
-	refreshTokenExpired,
-	sendGridSender,
-} from 'src/app.config';
+import { tokenExpired, refreshTokenExpired, sendGridSender } from 'src/app.config';
 import {
 	buildRegisterRO,
 	buildRequestResetPasswordTokenRO,
@@ -45,10 +36,7 @@ export class AuthService {
 			email: data.email,
 		});
 		if (userToAttempt == null) {
-			throw new HttpException(
-				'User with this email does not exist',
-				HttpStatus.NOT_FOUND,
-			);
+			throw new HttpException('User with this email does not exist', HttpStatus.NOT_FOUND);
 		}
 		const isMatch = await userToAttempt.comparePassword(data.password);
 		if (!isMatch) {
@@ -57,10 +45,7 @@ export class AuthService {
 				HttpStatus.UNAUTHORIZED,
 			);
 		}
-		const refreshToken = this.createJwtPayload(
-			userToAttempt,
-			refreshTokenExpired,
-		);
+		const refreshToken = this.createJwtPayload(userToAttempt, refreshTokenExpired);
 		userToAttempt.refreshToken = refreshToken;
 		const jwt = this.createJwtPayload(userToAttempt, tokenExpired);
 		await this.userRepository.save(userToAttempt);
@@ -72,18 +57,12 @@ export class AuthService {
 	async register(data: RegisterDto): Promise<UserEntity> {
 		const tempUser = await this.userRepository.findOne({ email: data.email });
 		if (tempUser) {
-			throw new HttpException(
-				'This email has already registered',
-				HttpStatus.BAD_REQUEST,
-			);
+			throw new HttpException('This email has already registered', HttpStatus.BAD_REQUEST);
 		}
 		const user = await this.userRepository.create(data);
 		try {
 			const userToAttempt = await this.userRepository.save(user);
-			const refreshToken = this.createJwtPayload(
-				userToAttempt,
-				refreshTokenExpired,
-			);
+			const refreshToken = this.createJwtPayload(userToAttempt, refreshTokenExpired);
 			userToAttempt.refreshToken = refreshToken;
 			const jwt = this.createJwtPayload(userToAttempt, tokenExpired);
 			await this.userRepository.save(userToAttempt);
@@ -108,10 +87,7 @@ export class AuthService {
 			email: payload.email,
 		});
 		if (userToAttempt == null) {
-			throw new HttpException(
-				'User with this email does not exist',
-				HttpStatus.NOT_FOUND,
-			);
+			throw new HttpException('User with this email does not exist', HttpStatus.NOT_FOUND);
 		}
 		return new Promise((resolve) => {
 			resolve(buildUserRO(userToAttempt));
@@ -133,9 +109,7 @@ export class AuthService {
 		});
 	}
 
-	async requestActivatedCode(
-		requestActivatedCode: RequestActivatedCodeDto,
-	): Promise<any> {
+	async requestActivatedCode(requestActivatedCode: RequestActivatedCodeDto): Promise<any> {
 		const codeToAttempt = await this.activatedCodeRepository.findOne({
 			email: requestActivatedCode.email,
 		});
@@ -149,33 +123,23 @@ export class AuthService {
 			codeToAttempt.activatedCode = activatedCode;
 			this.activatedCodeRepository.save(codeToAttempt);
 		}
-		await this.sendEmailActivatedCode(
-			requestActivatedCode.email,
-			activatedCode,
-		);
+		await this.sendEmailActivatedCode(requestActivatedCode.email, activatedCode);
 	}
 
-	async verifyActivatedCode(
-		verifyActivatedCode: VerifyActivatedCodeDto,
-	): Promise<any> {
+	async verifyActivatedCode(verifyActivatedCode: VerifyActivatedCodeDto): Promise<any> {
 		const codeToAttempt = await this.activatedCodeRepository.findOne({
 			activatedCode: verifyActivatedCode.activatedCode,
 			email: verifyActivatedCode.email,
 		});
 		if (codeToAttempt == null) {
-			throw new HttpException(
-				'The activated code or Email does not exist',
-				HttpStatus.NOT_FOUND,
-			);
+			throw new HttpException('The activated code or Email does not exist', HttpStatus.NOT_FOUND);
 		}
 		return new Promise((resolve) => {
 			resolve(buildVerifyActivatedCodeRO(codeToAttempt));
 		});
 	}
 
-	async requestResetPasswordToken(
-		requestResetPasswordTokenDto: any,
-	): Promise<any> {
+	async requestResetPasswordToken(requestResetPasswordTokenDto: any): Promise<any> {
 		const userToAttempt = await this.userRepository.findOne({
 			email: requestResetPasswordTokenDto.email,
 		});
@@ -202,10 +166,7 @@ export class AuthService {
 			email: resetPasswordDto.email,
 		});
 		if (userToAttempt == null) {
-			throw new HttpException(
-				'Reset token or Email does not exist',
-				HttpStatus.NOT_FOUND,
-			);
+			throw new HttpException('Reset token or Email does not exist', HttpStatus.NOT_FOUND);
 		}
 		userToAttempt.password = await bcrypt.hash(resetPasswordDto.password, 10);
 		await this.userRepository.save(userToAttempt);
@@ -229,13 +190,7 @@ export class AuthService {
 			text: 'Simed',
 			content: html,
 		};
-		await this.mailerService.sendMail(
-			user.email,
-			sendGridSender,
-			subject,
-			text,
-			content,
-		);
+		await this.mailerService.sendMail(user.email, sendGridSender, subject, text, content);
 	}
 
 	private async sendEmailActivatedCode(email, activatedCode): Promise<any> {
@@ -245,12 +200,6 @@ export class AuthService {
 			text: 'Simed',
 			content: html,
 		};
-		await this.mailerService.sendMail(
-			email,
-			sendGridSender,
-			subject,
-			text,
-			content,
-		);
+		await this.mailerService.sendMail(email, sendGridSender, subject, text, content);
 	}
 }

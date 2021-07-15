@@ -10,13 +10,7 @@ export class MailerService {
 		@Logger('MailerService') private readonly logger: LoggerService,
 	) {}
 
-	async sendMail(
-		toEmail: string,
-		fromEmail: string,
-		subject: string,
-		text: string,
-		html: string,
-	) {
+	async sendMail(toEmail: string, fromEmail: string, subject: string, text: string, html: string) {
 		console.log({
 			to: toEmail,
 			from: fromEmail,
