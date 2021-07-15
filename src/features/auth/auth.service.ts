@@ -143,7 +143,6 @@ export class AuthService {
 		const userToAttempt = await this.userRepository.findOne({
 			email: requestResetPasswordTokenDto.email,
 		});
-		//const resetPasswordToken = uuidv4();
 		const resetPasswordToken = Math.floor(Math.random() * 1000000) + 1;
 		if (userToAttempt) {
 			userToAttempt.resetPasswordToken = resetPasswordToken;
