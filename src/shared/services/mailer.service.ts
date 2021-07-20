@@ -11,6 +11,7 @@ export class MailerService {
 	) {}
 
 	async sendMail(toEmail: string, fromEmail: string, subject: string, text: string, html: string) {
+		// eslint-disable-next-line no-console
 		console.log({
 			to: toEmail,
 			from: fromEmail,
