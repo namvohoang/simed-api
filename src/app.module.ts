@@ -11,6 +11,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventsModule } from './features/events/events.module';
 import { UserEntity } from './database/entity/user.entity';
 import { ActivatedCodeEntity } from './database/entity/activated-code.entity';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 const entityInDev = [UserEntity, ActivatedCodeEntity];
 const entityInProd = ['dist/**/*.entity.js'];
@@ -58,9 +60,23 @@ const entityInProd = ['dist/**/*.entity.js'];
 				apiKey: configService.get('SENDGRID_API_KEY'),
 			}),
 		}),
+		ThrottlerModule.forRootAsync({
+			imports: [ConfigModule],
+			inject: [ConfigService],
+			useFactory: (configService: ConfigService) => ({
+				ttl: configService.get('THROTTLE_TTL'),
+				limit: configService.get('THROTTLE_LIMIT'),
+			}),
+		}),
 		EventsModule,
 	],
 	controllers: [AppController],
-	providers: [AppService],
+	providers: [
+		AppService,
+		{
+			provide: APP_GUARD,
+			useClass: ThrottlerGuard,
+		},
+	],
 })
 export class AppModule {}
