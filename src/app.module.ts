@@ -9,6 +9,11 @@ import { LoggerModule } from './logger/logger.module';
 import { SharedModule } from './shared/shared.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventsModule } from './features/events/events.module';
+import { UserEntity } from './database/entity/user.entity';
+import { ActivatedCodeEntity } from './database/entity/activated-code.entity';
+
+const entityInDev = [UserEntity, ActivatedCodeEntity];
+const entityInProd = ['dist/**/*.entity.js'];
 
 @Module({
 	imports: [
@@ -28,7 +33,7 @@ import { EventsModule } from './features/events/events.module';
 				password: configService.get('POSTGRES_PASSWORD'),
 				database: configService.get('POSTGRES_DATABASE'),
 
-				entities: ['dist/**/*.entity.js'],
+				entities: configService.get('NODE_ENV') === 'production' ? entityInProd : entityInDev,
 
 				migrationsTableName: 'migration',
 
@@ -39,6 +44,7 @@ import { EventsModule } from './features/events/events.module';
 				},
 				synchronize: true,
 				ssl: configService.get('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,
+				keepConnectionAlive: true,
 			}),
 		}),
 		AuthModule,
