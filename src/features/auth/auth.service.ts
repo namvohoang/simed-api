@@ -19,6 +19,9 @@ import { ActivatedCodeEntity } from 'src/database/entity/activated-code.entity';
 import { MailerService } from 'src/shared/services/mailer.service';
 import { VerifyActivatedCodeDto } from './dto/verify-activated-code.dto';
 import { RequestActivatedCodeDto } from './dto/request-activated-code.dto';
+import { SignInRo } from './response-object/signin.ro';
+import { UserRo } from './response-object/user.ro';
+import { RegisterRo } from './response-object/register.ro';
 
 @Injectable()
 export class AuthService {
@@ -31,7 +34,7 @@ export class AuthService {
 		private readonly mailerService: MailerService,
 	) {}
 
-	async login(data: any): Promise<any> {
+	async login(data: any): Promise<SignInRo> {
 		const userToAttempt = await this.userRepository.findOne({
 			email: data.email,
 		});
@@ -54,7 +57,7 @@ export class AuthService {
 		});
 	}
 
-	async register(data: RegisterDto): Promise<UserEntity> {
+	async register(data: RegisterDto): Promise<RegisterRo> {
 		const tempUser = await this.userRepository.findOne({ email: data.email });
 		if (tempUser) {
 			throw new HttpException('This email has already registered', HttpStatus.BAD_REQUEST);
@@ -74,7 +77,7 @@ export class AuthService {
 		}
 	}
 
-	async getUserById(id: string): Promise<UserEntity> {
+	async getUserById(id: string): Promise<SignInRo> {
 		const userToAttempt = await this.userRepository.findOne(id);
 		const jwt = this.createJwtPayload(userToAttempt, tokenExpired);
 		return new Promise((resolve) => {
@@ -82,7 +85,7 @@ export class AuthService {
 		});
 	}
 
-	async getUserByEmail(payload: JwtPayload): Promise<UserEntity> {
+	async getUserByEmail(payload: JwtPayload): Promise<UserRo> {
 		const userToAttempt = await this.userRepository.findOne({
 			email: payload.email,
 		});

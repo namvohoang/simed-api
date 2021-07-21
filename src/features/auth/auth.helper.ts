@@ -1,6 +1,9 @@
 import { tokenExpired } from 'src/app.config';
+import { RegisterRo } from './response-object/register.ro';
+import { SignInRo } from './response-object/signin.ro';
+import { UserRo } from './response-object/user.ro';
 
-export function buildSignInRO(user, jwt): any {
+export function buildSignInRO(user, jwt): SignInRo {
 	return {
 		token: jwt,
 		refreshToken: user.refreshToken,
@@ -9,7 +12,7 @@ export function buildSignInRO(user, jwt): any {
 	};
 }
 
-export function buildRegisterRO(user, jwt): any {
+export function buildRegisterRO(user, jwt): RegisterRo {
 	return {
 		token: jwt,
 		refreshToken: user.refreshToken,
@@ -18,7 +21,7 @@ export function buildRegisterRO(user, jwt): any {
 	};
 }
 
-export function buildUserRO(user): any {
+export function buildUserRO(user): UserRo {
 	return {
 		phoneNumber: user.phoneNumber,
 		firstName: user.firstName,
