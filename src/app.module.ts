@@ -13,6 +13,7 @@ import { UserEntity } from './database/entity/user.entity';
 import { ActivatedCodeEntity } from './database/entity/activated-code.entity';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { AutodeskForgeModule } from './features/autodesk-forge/autodesk-forge.module';
 
 const entityInDev = [UserEntity, ActivatedCodeEntity];
 const entityInProd = ['dist/**/*.entity.js'];
@@ -69,6 +70,7 @@ const entityInProd = ['dist/**/*.entity.js'];
 			}),
 		}),
 		EventsModule,
+		AutodeskForgeModule,
 	],
 	controllers: [AppController],
 	providers: [
