@@ -14,7 +14,7 @@ import { SignInRo } from './response-object/signin.ro';
 import { RegisterRo } from './response-object/register.ro';
 
 @Controller('auth')
-@ApiTags('authentication')
+@ApiTags('Authentication')
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 

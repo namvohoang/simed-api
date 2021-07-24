@@ -1,9 +1,11 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AutodeskForgeService } from './autodesk-forge.service';
 import { CreateAutodeskForgeDto } from './dto/create-autodesk-forge.dto';
 import { UpdateAutodeskForgeDto } from './dto/update-autodesk-forge.dto';
 
 @Controller('autodesk-forge')
+@ApiTags('Autodesk Forge')
 export class AutodeskForgeController {
 	constructor(private readonly autodeskForgeService: AutodeskForgeService) {}
 
@@ -30,5 +32,12 @@ export class AutodeskForgeController {
 	@Delete(':id')
 	remove(@Param('id') id: string) {
 		return this.autodeskForgeService.remove(+id);
+	}
+
+	@ApiOperation({ summary: ' Get Autodesk Token ' })
+	@Post('get-token')
+	async getToken() {
+		return await this.autodeskForgeService.getToken2();
+		return await this.autodeskForgeService.getToken().toPromise();
 	}
 }
