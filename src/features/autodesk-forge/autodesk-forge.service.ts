@@ -1,7 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { HttpCode, HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateAutodeskForgeDto } from './dto/create-autodesk-forge.dto';
-import { UpdateAutodeskForgeDto } from './dto/update-autodesk-forge.dto';
+import { HttpException, Injectable } from '@nestjs/common';
 import * as ForgeSDK from 'forge-apis';
 import { AxiosResponse } from 'axios';
 import { Observable, of } from 'rxjs';
@@ -14,27 +12,6 @@ import { UploadObjectDto } from './dto/upload-object.dto';
 @Injectable()
 export class AutodeskForgeService {
 	constructor(private httpService: HttpService, private configService: ConfigService) {}
-
-	create(createAutodeskForgeDto: CreateAutodeskForgeDto) {
-		return 'This action adds a new autodeskForge';
-	}
-
-	findAll() {
-		return `This action returns all autodeskForge`;
-	}
-
-	findOne(id: number) {
-		return `This action returns a #${id} autodeskForge`;
-	}
-
-	update(id: number, updateAutodeskForgeDto: UpdateAutodeskForgeDto) {
-		return `This action updates a #${id} autodeskForge`;
-	}
-
-	remove(id: number) {
-		return `This action removes a #${id} autodeskForge`;
-	}
-
 	getToken(): Observable<AxiosResponse<any>> {
 		const url = 'https://developer.api.autodesk.com/authentication/v1/authenticate';
 		const body = {
