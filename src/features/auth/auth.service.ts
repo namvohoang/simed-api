@@ -22,6 +22,7 @@ import { RequestActivatedCodeDto } from './dto/request-activated-code.dto';
 import { SignInRo } from './response-object/signin.ro';
 import { UserRo } from './response-object/user.ro';
 import { RegisterRo } from './response-object/register.ro';
+import { SignInDto } from './dto/sign-in.dto';
 
 @Injectable()
 export class AuthService {
@@ -34,7 +35,7 @@ export class AuthService {
 		private readonly mailerService: MailerService,
 	) {}
 
-	async login(data: any): Promise<SignInRo> {
+	async login(data: SignInDto): Promise<SignInRo> {
 		const userToAttempt = await this.userRepository.findOne({
 			email: data.email,
 		});
