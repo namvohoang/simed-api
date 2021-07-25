@@ -14,6 +14,8 @@ import { ActivatedCodeEntity } from './database/entity/activated-code.entity';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { AutodeskForgeModule } from './features/autodesk-forge/autodesk-forge.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 
 const entityInDev = [UserEntity, ActivatedCodeEntity];
 const entityInProd = ['dist/**/*.entity.js'];
@@ -68,6 +70,16 @@ const entityInProd = ['dist/**/*.entity.js'];
 				ttl: configService.get('THROTTLE_TTL'),
 				limit: configService.get('THROTTLE_LIMIT'),
 			}),
+		}),
+		MulterModule.registerAsync({
+			imports: [ConfigModule],
+			useFactory: async (configService: ConfigService) => ({
+				dest: configService.get('MULTER_DEST'),
+				storage: diskStorage({
+					destination: configService.get('MULTER_DEST'),
+				}),
+			}),
+			inject: [ConfigService],
 		}),
 		EventsModule,
 		AutodeskForgeModule,
