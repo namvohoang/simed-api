@@ -8,6 +8,7 @@ import * as qs from 'qs';
 import { catchError, map } from 'rxjs/operators';
 import { CreateBucketDto } from './dto/create-bucket.dto';
 import { UploadObjectDto } from './dto/upload-object.dto';
+import { TranslateJobDto } from './dto/translate-job.dto';
 
 @Injectable()
 export class AutodeskForgeService {
@@ -66,6 +67,54 @@ export class AutodeskForgeService {
 		const credentials = await this.get2LeggedToken();
 		try {
 			return await objectApi.uploadObject(bucketKey, originalname, size, buffer, options, oauth2client, credentials);
+		} catch (e) {
+			throw new HttpException(e.statusBody?.reason || e.statusMessage, e.statusCode);
+		}
+	}
+
+	async translateJob(translateJobDto: TranslateJobDto) {
+		const derivativesApi = new ForgeSDK.DerivativesApi();
+		const options = { xAdsForce: false };
+		const { urn } = translateJobDto;
+		const job: ForgeSDK.JobPayload = {
+			input: {
+				urn,
+			},
+			output: {
+				formats: [{ type: 'svf', views: ['2d', '3d'] }],
+			},
+		};
+		const scopes: ForgeSDK.Scope[] = ['data:read', 'data:write', 'bucket:create', 'bucket:update', 'bucket:read', 'data:create'];
+		const oauth2client = this.getOauth2Client(scopes, true);
+		const credentials = await this.get2LeggedToken();
+		try {
+			return await derivativesApi.translate(job, options, oauth2client, credentials);
+		} catch (e) {
+			throw new HttpException(e.statusBody?.reason || e.statusMessage, e.statusCode);
+		}
+	}
+
+	async getManifest(urn: string) {
+		const derivativesApi = new ForgeSDK.DerivativesApi();
+		const options = {};
+		const scopes: ForgeSDK.Scope[] = ['data:read', 'data:write', 'bucket:create', 'bucket:update', 'bucket:read', 'data:create'];
+		const oauth2client = this.getOauth2Client(scopes, true);
+		const credentials = await this.get2LeggedToken();
+		try {
+			return await derivativesApi.getManifest(urn, options, oauth2client, credentials);
+		} catch (e) {
+			throw new HttpException(e.statusBody?.reason || e.statusMessage, e.statusCode);
+		}
+	}
+
+	async getDerivativeManifest(urn: string, derivativeUrn: string) {
+		const derivativesApi = new ForgeSDK.DerivativesApi();
+		const options = {};
+		const scopes: ForgeSDK.Scope[] = ['data:read', 'data:write', 'bucket:create', 'bucket:update', 'bucket:read', 'data:create'];
+		const oauth2client = this.getOauth2Client(scopes, true);
+		const credentials = await this.get2LeggedToken();
+		try {
+			return await derivativesApi.getDerivativeManifest(urn, derivativeUrn, options, oauth2client, credentials);
 		} catch (e) {
 			throw new HttpException(e.statusBody?.reason || e.statusMessage, e.statusCode);
 		}
