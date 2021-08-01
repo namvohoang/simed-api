@@ -3,11 +3,13 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { apiVersion } from './app.config';
 import { ValidationPipe } from '@nestjs/common';
+import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 declare const module: any;
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule, { cors: true });
+	const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
 	app.useGlobalPipes(new ValidationPipe());
 	const appVersion = `/api/${apiVersion}`;
 	app.setGlobalPrefix(appVersion);
@@ -21,6 +23,10 @@ async function bootstrap() {
 		.build();
 	const document = SwaggerModule.createDocument(app, options);
 	SwaggerModule.setup('swagger', app, document);
+
+	app.useStaticAssets(join(__dirname, '..', 'public'));
+	app.setBaseViewsDir(join(__dirname, '..', 'views'));
+	app.setViewEngine('hbs');
 	await app.listen(process.env.PORT || 3000);
 
 	if (module.hot) {
