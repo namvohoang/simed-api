@@ -30,6 +30,7 @@ export function buildUserRO(user): UserRo {
 		gender: user.gender,
 		dateOfBirth: user.dateOfBirth,
 		id: user.id,
+		is2FA: user.is2FA,
 		isActive: user.isActive,
 		isArchived: user.isArchived,
 		createDateTime: user.createDateTime,

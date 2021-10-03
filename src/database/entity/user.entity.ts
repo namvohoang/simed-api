@@ -42,6 +42,9 @@ export class UserEntity {
 	@Column({ nullable: true })
 	resetPasswordToken: number;
 
+	@Column({ type: 'boolean', default: false })
+	is2FA: boolean;
+
 	@Column({ type: 'boolean', default: true })
 	isActive: boolean;
 

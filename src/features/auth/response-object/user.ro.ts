@@ -23,6 +23,9 @@ export class UserRo {
 	id: string;
 
 	@ApiProperty()
+	is2FA: boolean;
+
+	@ApiProperty()
 	isActive: boolean;
 
 	@ApiProperty()

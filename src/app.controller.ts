@@ -7,7 +7,7 @@ export class AppController {
 
 	@Get()
 	@Render('index')
-	root() {
-		return { message: 'Hello world!' };
+	async root() {
+		return await this.appService.getRoot();
 	}
 }

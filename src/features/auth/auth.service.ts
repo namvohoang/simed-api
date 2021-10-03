@@ -4,6 +4,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/database/entity/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { keyEncoder } from '@otplib/plugin-thirty-two';
+import { authenticator } from '@otplib/preset-v11';
+import { KeyEncodings } from '@otplib/core';
 import { tokenExpired, refreshTokenExpired, sendGridSender } from 'src/app.config';
 import {
 	buildRegisterRO,
@@ -23,6 +26,8 @@ import { SignInRo } from './response-object/signin.ro';
 import { UserRo } from './response-object/user.ro';
 import { RegisterRo } from './response-object/register.ro';
 import { SignInDto } from './dto/sign-in.dto';
+import { VerifyOTPTokenDto } from './dto/verify-otp-token.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -33,6 +38,7 @@ export class AuthService {
 		private activatedCodeRepository: Repository<ActivatedCodeEntity>,
 		private readonly jwtService: JwtService,
 		private readonly mailerService: MailerService,
+		private configService: ConfigService,
 	) {}
 
 	async login(data: SignInDto): Promise<SignInRo> {
@@ -176,6 +182,50 @@ export class AuthService {
 		return new Promise((resolve) => {
 			resolve(buildResetPasswordRO(userToAttempt));
 		});
+	}
+
+	async getQrSecret(userId: string): Promise<any> {
+		const { user } = await this.getUserById(userId);
+		const userToAttempt = user;
+		if (userToAttempt == null) {
+			throw new HttpException('User does not exist', HttpStatus.NOT_FOUND);
+		}
+		const secret64 = this.configService.get('TWO_FA_SECRET');
+		const service = 'Simed';
+		const secret = authenticator.keyuri(
+			userToAttempt.email,
+			service,
+			keyEncoder(`${secret64}${userToAttempt.email}`, KeyEncodings.ASCII),
+		);
+		return secret;
+	}
+
+	async toggle2FA(userId: string) {
+		const { user } = await this.getUserById(userId);
+		const userToAttempt = user;
+		if (userToAttempt == null) {
+			throw new HttpException('User does not exist', HttpStatus.NOT_FOUND);
+		}
+		userToAttempt.is2FA = !userToAttempt.is2FA;
+		await this.userRepository.save(userToAttempt);
+		return new Promise((resolve) => {
+			resolve(buildUserRO(userToAttempt));
+		});
+	}
+
+	async verifyOTPToken(userId: string, verifyOTPToken: VerifyOTPTokenDto) {
+		const { user } = await this.getUserById(userId);
+		const userToAttempt = user;
+		if (userToAttempt == null) {
+			throw new HttpException('User does not exist', HttpStatus.NOT_FOUND);
+		}
+		const secret64 = this.configService.get('TWO_FA_SECRET');
+		authenticator.options = { epoch: Date.now() / 1000 };
+		const tokenValidates = authenticator.verify({
+			token: verifyOTPToken.otpToken,
+			secret: keyEncoder(`${secret64}${userToAttempt.email}`, KeyEncodings.ASCII),
+		});
+		return tokenValidates;
 	}
 
 	private createJwtPayload(user, tokenExpired): string {

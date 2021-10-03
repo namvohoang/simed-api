@@ -3,6 +3,7 @@ export const tokenExpired: any = process.env.TOKEN_EXPIRED || 3600;
 export const refreshTokenExpired = process.env.REFRESH_TOKEN_EXPIRED || '365d';
 export const serverUrl = process.env.SERVER_URL;
 export const apiVersion = process.env.API_VERSION || 'v1';
+export const twoFASecret = process.env.TWO_FA_SECRET;
 
 // Third party configurations
 export const sendGridApiKey = process.env.SENDGRID_API_KEY;
