@@ -16,40 +16,40 @@ export class RegisterDto {
 		message: 'Password contains only digit and word',
 	})
 	@MinLength(8, {
-		message: 'Min length is 8 characters',
+		message: 'Password Min length is 8 characters',
 	})
 	readonly password: string;
 
 	@ApiProperty()
 	@MinLength(3, {
-		message: 'Minimum length is 3 characters',
+		message: 'First name Minimum length is 3 characters',
 	})
 	@MaxLength(50, {
-		message: 'Maximum length is 50 characters',
+		message: 'First name Maximum length is 50 characters',
 	})
 	@Matches(/^[a-z ]+$/i, {
-		message: 'Full name contains only text',
+		message: 'First name contains only text',
 	})
 	readonly firstName: string;
 
 	@ApiProperty()
 	@MinLength(3, {
-		message: 'Minimum length is 3 characters',
+		message: 'Last name Minimum length is 3 characters',
 	})
 	@MaxLength(50, {
-		message: 'Maximum length is 50 characters',
+		message: 'Last name Maximum length is 50 characters',
 	})
 	@Matches(/^[a-z ]+$/i, {
-		message: 'Full name contains only text',
+		message: 'Last name contains only text',
 	})
 	readonly lastName: string;
 
 	@ApiProperty()
-	@MinLength(3, {
-		message: 'Minimum length is 6 characters',
+	@MinLength(6, {
+		message: 'Phone Minimum length is 6 characters',
 	})
 	@MaxLength(50, {
-		message: 'Maximum length is 20 characters',
+		message: 'Phone Maximum length is 20 characters',
 	})
 	@Matches(/^[0-9 +]+$/i, {
 		message: 'Phone contains only number',

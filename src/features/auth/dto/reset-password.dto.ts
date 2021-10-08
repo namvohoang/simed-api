@@ -7,7 +7,7 @@ export class ResetPasswordDto {
 		message: 'Password contains only digit and word',
 	})
 	@MinLength(8, {
-		message: 'Min length is 8 characters',
+		message: 'Password Min length is 8 characters',
 	})
 	readonly password: string;
 
